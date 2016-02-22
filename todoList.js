@@ -185,13 +185,20 @@ var AddTodo = React.createClass({
           this.input = node;}} />
 
         <button onClick={() => {
-          this.props.onAdd(this.input.value);
+          this.onAdd(this.input.value);
           this.input.value = '';
         }}>
         Add Todo
         </button>
       </div>
     );
+  },
+  onAdd: function(todoText) {
+    store.dispatch({
+      type: 'ADD_TODO',
+      text: todoText,
+      id: nextTodoId++
+    });
   }
 
 });
@@ -204,7 +211,7 @@ var VisibleTodoList = React.createClass({
   componentWillUnmount: function() {
     this.unsubscribe();
   },
-  
+
   render: function() {
     const props = this.props;
     const state = store.getState();
@@ -239,14 +246,7 @@ var TodoApp = React.createClass({
   render: function() {
     return (
       <div>
-        <AddTodo onAdd={(todoText) =>
-          store.dispatch({
-            type: 'ADD_TODO',
-            text: todoText,
-            id: nextTodoId++
-          })
-        }/>
-
+        <AddTodo />
         <TodoFilters />
         <VisibleTodoList />
       </div>)
@@ -255,9 +255,7 @@ var TodoApp = React.createClass({
 
 const render = () => {
   ReactDOM.render(
-    <TodoApp
-      { ...store.getState()}
-    />,
+    <TodoApp />,
     document.getElementById('root')
   );
 };
