@@ -1,0 +1,39 @@
+video 5
+https://jsbin.com/cofagodugu/2/edit?html,js,console
+
+video 6
+https://jsbin.com/zuvefonivo/1/edit?html,js,output
+
+video 7: implement createStore
+https://jsbin.com/yezayubequ/2/edit?js,output
+
+video 8: creating the counter with react
+https://jsbin.com/ceviqawelo/1/edit?js,output
+
+video 9: avoiding array mutations w/deepFreeze
+https://jsbin.com/sekawuqeka/1/edit?js,console
+
+video 10: avoiding object mutations
+https://jsbin.com/galoguxafu/1/edit?html,js,console
+
+video 11, 12: add_todo, toggle_todo
+https://jsbin.com/henigoduxe/1/edit?js,console
+
+video 13: reducer composition
+https://jsbin.com/suzidaqizo/1/edit?js,console
+
+video 15: using redux combineReducers
+https://jsbin.com/momumo/edit?html,js,console
+
+**video 16: implement combineReducers from scratch!
+https://jsbin.com/zoviwa/edit?js,console
+
+video 17: adding react - simple todo adder button
+https://jsbin.com/zekuqu/edit?js,console,output
+
+video 18,19,20,21,22:
+add todos, cross off todos, filter todos
+refactor into "presentational components", which contain html markup and little
+else, and "container components" which contain no html, and which have app logic
+
+https://jsbin.com/dafeba/27/edit?js,console,output
