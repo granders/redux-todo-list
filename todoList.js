@@ -196,27 +196,26 @@ var AddTodo = React.createClass({
 
 });
 
-let nextTodoId = 0;
-var TodoApp = React.createClass({
+var VisibleTodoList = React.createClass({
+  componentDidMount: function() {
+    this.unsubscribe = store.subscribe(() => { this.forceUpdate(); });
+  },
+
+  componentWillUnmount: function() {
+    this.unsubscribe();
+  },
+  
   render: function() {
+    const props = this.props;
+    const state = store.getState();
+
     return (
-      <div>
-        <AddTodo onAdd={(todoText) =>
-          store.dispatch({
-            type: 'ADD_TODO',
-            text: todoText,
-            id: nextTodoId++
-          })
-        }/>
-
-        <TodoFilters />
-
-        <TodoList
-          todos={
-            this.filterTodos(this.props.todos, this.props.visibilityFilter) }
-          onTodoClick={ (id) => {store.dispatch({type: 'TOGGLE_TODO', id: id}); }}
-        />
-      </div>)
+      <TodoList
+        todos={
+          this.filterTodos(state.todos, state.visibilityFilter) }
+        onTodoClick={ (id) => {store.dispatch({type: 'TOGGLE_TODO', id: id}); }}
+      />
+    );
   },
   filterTodos: function(todos, filter) {
     return todos.filter(todo => {
@@ -231,6 +230,26 @@ var TodoApp = React.createClass({
              return true;
         }
      })
+  }
+
+});
+
+let nextTodoId = 0;
+var TodoApp = React.createClass({
+  render: function() {
+    return (
+      <div>
+        <AddTodo onAdd={(todoText) =>
+          store.dispatch({
+            type: 'ADD_TODO',
+            text: todoText,
+            id: nextTodoId++
+          })
+        }/>
+
+        <TodoFilters />
+        <VisibleTodoList />
+      </div>)
   }
 });
 
