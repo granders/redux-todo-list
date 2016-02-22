@@ -8,6 +8,6 @@ following files to the corresponding section on a JSBIN project.
 
 Note: javascript section should be set to ES6/babel
 
-index.html -> jsbin html section
-style.css -> jsbin css section
-todoList.js -> json javascript section
+- index.html -> jsbin html section
+- style.css -> jsbin css section
+- todoList.js -> json javascript section
