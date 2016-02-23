@@ -37,3 +37,6 @@ refactor into "presentational components", which contain html markup and little
 else, and "container components" which contain no html, and which have app logic
 
 https://jsbin.com/dafeba/27/edit?js,console,output
+
+video 24: More refactoring: remove global store variable - pass it through props
+https://jsbin.com/vikoni/edit?js,console,output

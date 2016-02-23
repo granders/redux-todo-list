@@ -52,18 +52,23 @@ const todoApp = combineReducers({
   todos: todos,
   visibilityFilter: visibilityFilter
 });
-const store = createStore(todoApp);
-store.old_dispatch = store.dispatch;
-store.dispatch = (action) => {
-  if (typeof action === "undefined") {
-    console.log("Initial state...")
-  } else {
-    console.log("Dispatching " + action.type);
-    store.old_dispatch(action);
-  }
 
-  console.log("Current state:");
-  console.log(store.getState());
+const createVerboseStore = (reducer) => {
+  const store = createStore(todoApp);
+  store.old_dispatch = store.dispatch;
+  store.dispatch = (action) => {
+    if (typeof action === "undefined") {
+      console.log("Initial state...")
+    } else {
+      console.log("Dispatching " + action.type);
+      store.old_dispatch(action);
+    }
+
+    console.log("Current state:");
+    console.log(store.getState());
+  };
+
+  return store;
 };
 
 ///////////////////////////////////
@@ -124,6 +129,7 @@ var Link = React.createClass({
 
 var FilterLink = React.createClass({
   componentDidMount: function() {
+    const { store } = this.props;
     this.unsubscribe = store.subscribe(() => { this.forceUpdate(); });
   },
 
@@ -133,6 +139,7 @@ var FilterLink = React.createClass({
 
   render: function() {
     const props = this.props;
+    const { store } = this.props;
 
     // Note that if there were another component that could independently
     // modify state.visibilityFilter, we could end up with a stale value
@@ -144,12 +151,12 @@ var FilterLink = React.createClass({
     return (
       <Link
         active={props.filter !== state.visibilityFilter}
-        onClick={() => { this.selectFilter(props.filter); }}
+        onClick={() => { this.selectFilter(props.filter, store); }}
         children={props.children}
       />
     );
   },
-  selectFilter: function(filterName) {
+  selectFilter: function(filterName, store) {
     store.dispatch({
       type: 'SET_VISIBILITY_FILTER',
       filter: filterName
@@ -159,18 +166,20 @@ var FilterLink = React.createClass({
 
 var TodoFilters = React.createClass({
   render: function() {
+    const { store } = this.props;
+
     return(
       <p>
         Show: {' '}
-        <FilterLink filter="SHOW_ALL">
+        <FilterLink filter="SHOW_ALL" store={store}>
           All
         </FilterLink>
         {' '}
-        <FilterLink filter="SHOW_ACTIVE">
+        <FilterLink filter="SHOW_ACTIVE" store={store}>
           Active
         </FilterLink>
         {' '}
-        <FilterLink filter="SHOW_COMPLETED">
+        <FilterLink filter="SHOW_COMPLETED" store={store}>
           Completed
         </FilterLink>
       </p>);
@@ -179,13 +188,15 @@ var TodoFilters = React.createClass({
 
 var AddTodo = React.createClass({
   render: function() {
+    const { store } = this.props;
+
     return (
       <div>
         <input ref={node => {
           this.input = node;}} />
 
         <button onClick={() => {
-          this.onAdd(this.input.value);
+          this.onAdd(this.input.value, store);
           this.input.value = '';
         }}>
         Add Todo
@@ -193,7 +204,7 @@ var AddTodo = React.createClass({
       </div>
     );
   },
-  onAdd: function(todoText) {
+  onAdd: function(todoText, store) {
     store.dispatch({
       type: 'ADD_TODO',
       text: todoText,
@@ -205,6 +216,7 @@ var AddTodo = React.createClass({
 
 var VisibleTodoList = React.createClass({
   componentDidMount: function() {
+    const { store } = this.props;
     this.unsubscribe = store.subscribe(() => { this.forceUpdate(); });
   },
 
@@ -214,6 +226,7 @@ var VisibleTodoList = React.createClass({
 
   render: function() {
     const props = this.props;
+    const { store } = this.props;
     const state = store.getState();
 
     return (
@@ -244,21 +257,17 @@ var VisibleTodoList = React.createClass({
 let nextTodoId = 0;
 var TodoApp = React.createClass({
   render: function() {
+    const { store } = this.props;
     return (
       <div>
-        <AddTodo />
-        <TodoFilters />
-        <VisibleTodoList />
+        <AddTodo store={store}/>
+        <TodoFilters store={store}/>
+        <VisibleTodoList store={store}/>
       </div>)
   }
 });
 
-const render = () => {
-  ReactDOM.render(
-    <TodoApp />,
-    document.getElementById('root')
-  );
-};
-
-store.subscribe(render);
-render();
+ReactDOM.render(
+  <TodoApp store={createVerboseStore(todoApp)}/>,
+  document.getElementById('root')
+);
