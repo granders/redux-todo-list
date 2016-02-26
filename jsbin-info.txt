@@ -40,3 +40,6 @@ https://jsbin.com/dafeba/27/edit?js,console,output
 
 video 24: More refactoring: remove global store variable - pass it through props
 https://jsbin.com/vikoni/edit?js,console,output
+
+video 25: Passing the store implicitly through context provider 
+https://jsbin.com/jukuyu/1/edit

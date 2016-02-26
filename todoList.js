@@ -128,8 +128,12 @@ var Link = React.createClass({
 });
 
 var FilterLink = React.createClass({
+  contextTypes: {
+    store: React.PropTypes.object
+  },
+
   componentDidMount: function() {
-    const { store } = this.props;
+    const { store } = this.context;
     this.unsubscribe = store.subscribe(() => { this.forceUpdate(); });
   },
 
@@ -139,7 +143,7 @@ var FilterLink = React.createClass({
 
   render: function() {
     const props = this.props;
-    const { store } = this.props;
+    const { store } = this.context;
 
     // Note that if there were another component that could independently
     // modify state.visibilityFilter, we could end up with a stale value
@@ -165,21 +169,25 @@ var FilterLink = React.createClass({
 });
 
 var TodoFilters = React.createClass({
+  contextTypes: {
+    store: React.PropTypes.object
+  },
+
   render: function() {
-    const { store } = this.props;
+    const { store } = this.context;
 
     return(
       <p>
         Show: {' '}
-        <FilterLink filter="SHOW_ALL" store={store}>
+        <FilterLink filter="SHOW_ALL">
           All
         </FilterLink>
         {' '}
-        <FilterLink filter="SHOW_ACTIVE" store={store}>
+        <FilterLink filter="SHOW_ACTIVE">
           Active
         </FilterLink>
         {' '}
-        <FilterLink filter="SHOW_COMPLETED" store={store}>
+        <FilterLink filter="SHOW_COMPLETED">
           Completed
         </FilterLink>
       </p>);
@@ -187,8 +195,12 @@ var TodoFilters = React.createClass({
 });
 
 var AddTodo = React.createClass({
+  contextTypes: {
+    store: React.PropTypes.object
+  },
+
   render: function() {
-    const { store } = this.props;
+    const { store } = this.context;
 
     return (
       <div>
@@ -215,8 +227,12 @@ var AddTodo = React.createClass({
 });
 
 var VisibleTodoList = React.createClass({
+  contextTypes: {
+    store: React.PropTypes.object
+  },
+
   componentDidMount: function() {
-    const { store } = this.props;
+    const { store } = this.context;
     this.unsubscribe = store.subscribe(() => { this.forceUpdate(); });
   },
 
@@ -226,7 +242,7 @@ var VisibleTodoList = React.createClass({
 
   render: function() {
     const props = this.props;
-    const { store } = this.props;
+    const { store } = this.context;
     const state = store.getState();
 
     return (
@@ -254,20 +270,42 @@ var VisibleTodoList = React.createClass({
 
 });
 
+var Provider = React.createClass({
+  getChildContext: function() {
+    return {
+      store: this.props.store
+    };
+  },
+  // In order to use child context in React,
+  // we *must* specify childContextTypes
+  childContextTypes: {
+    store: React.PropTypes.object
+  },
+  render: function() {
+    return this.props.children;
+  }
+});
+
 let nextTodoId = 0;
 var TodoApp = React.createClass({
+  contextTypes: {
+    store: React.PropTypes.object
+  },
+
   render: function() {
-    const { store } = this.props;
+    const { store } = this.context;
     return (
       <div>
-        <AddTodo store={store}/>
-        <TodoFilters store={store}/>
-        <VisibleTodoList store={store}/>
+        <AddTodo />
+        <TodoFilters />
+        <VisibleTodoList />
       </div>)
   }
 });
 
 ReactDOM.render(
-  <TodoApp store={createVerboseStore(todoApp)}/>,
+  <Provider store={createVerboseStore(todoApp)}>
+    <TodoApp />
+  </Provider>,
   document.getElementById('root')
 );
