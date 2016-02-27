@@ -48,6 +48,7 @@ const visibilityFilter = (state = 'SHOW_ALL', action) => {
 };
 
 const { combineReducers, createStore } = Redux;
+const { Provider } = ReactRedux;
 const todoApp = combineReducers({
   todos: todos,
   visibilityFilter: visibilityFilter
@@ -268,22 +269,6 @@ var VisibleTodoList = React.createClass({
      })
   }
 
-});
-
-var Provider = React.createClass({
-  getChildContext: function() {
-    return {
-      store: this.props.store
-    };
-  },
-  // In order to use child context in React,
-  // we *must* specify childContextTypes
-  childContextTypes: {
-    store: React.PropTypes.object
-  },
-  render: function() {
-    return this.props.children;
-  }
 });
 
 let nextTodoId = 0;
