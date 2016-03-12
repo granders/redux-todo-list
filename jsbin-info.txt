@@ -55,3 +55,6 @@ https://jsbin.com/hanuto/3/edit?js,console,output
 
 video 29:
 https://jsbin.com/jirute/1/edit?js,console,output
+
+video 30
+https://jsbin.com/zikape/1/edit?js,console,output

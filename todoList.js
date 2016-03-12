@@ -131,6 +131,13 @@ var Link = React.createClass({
   }
 });
 
+// an "action creator"
+const setVisibilityFilterAction = (filter) => {
+  return {
+    type: 'SET_VISIBILITY_FILTER',
+    filter: filter
+  }
+}
 const mapStateToLinkProps = (state, ownProps) => {
   return {
     active: ownProps.filter !== state.visibilityFilter
@@ -139,10 +146,7 @@ const mapStateToLinkProps = (state, ownProps) => {
 const mapDispatchToLinkProps = (dispatch, ownProps) => {
   return {
     onClick: () => {
-      dispatch({
-        type: 'SET_VISIBILITY_FILTER',
-        filter: ownProps.filter
-      });
+      dispatch(setVisibilityFilterAction(ownProps.filter));
     }
   }
 }
@@ -177,6 +181,14 @@ var TodoFilters = React.createClass({
   }
 });
 
+const addTodoAction = (text) => {
+  return {
+    type: 'ADD_TODO',
+    id: nextTodoId++,
+    text
+  }
+}
+
 var AddTodo = React.createClass({
   render: function() {
     const dispatch = this.props.dispatch;
@@ -186,11 +198,7 @@ var AddTodo = React.createClass({
           this.input = node;}} />
 
         <button onClick={() => {
-          dispatch({
-            type: 'ADD_TODO',
-            text: this.input.value,
-            id: nextTodoId++
-          });
+          dispatch(addTodoAction(this.input.value));
           this.input.value = '';
         }}>
         Add Todo
@@ -216,6 +224,12 @@ const filterTodos = function(todos, filter) {
    })
 }
 
+const toggleTodoAction = (id) => {
+  return {
+    type: 'TOGGLE_TODO',
+    id
+  };
+}
 // normally would call this mapStateToProps, but everything is in
 // one file, so we'll make longer names to keep things unique
 const mapStateToTodoListProps = (state) => {
@@ -225,7 +239,7 @@ const mapStateToTodoListProps = (state) => {
 };
 const mapDispatchToTodoListProps = (dispatch) => {
   return {
-    onTodoClick: (id) => { dispatch({type: 'TOGGLE_TODO', id: id}) }
+    onTodoClick: (id) => { dispatch(toggleTodoAction(id)) }
   };
 };
 const VisibleTodoList = connect(
@@ -238,7 +252,6 @@ var TodoApp = React.createClass({
   contextTypes: {
     store: React.PropTypes.object
   },
-
   render: function() {
     const { store } = this.context;
     return (
