@@ -227,49 +227,38 @@ var AddTodo = React.createClass({
 
 });
 
-var VisibleTodoList = React.createClass({
-  contextTypes: {
-    store: React.PropTypes.object
-  },
+const filterTodos = function(todos, filter) {
+  return todos.filter(todo => {
+      switch(filter) {
+        case 'SHOW_ALL':
+           return true;
+        case 'SHOW_COMPLETED':
+           return todo.completed;
+         case 'SHOW_ACTIVE':
+           return !todo.completed;
+         default:
+           return true;
+      }
+   })
+}
 
-  componentDidMount: function() {
-    const { store } = this.context;
-    this.unsubscribe = store.subscribe(() => { this.forceUpdate(); });
-  },
+const mapStateToProps = (state) => {
+  return {
+      todos: filterTodos(state.todos, state.visibilityFilter)
+  };
+};
 
-  componentWillUnmount: function() {
-    this.unsubscribe();
-  },
+const mapDispatchToProps = (dispatch) => {
+  return {
+    onTodoClick: (id) => { dispatch({type: 'TOGGLE_TODO', id: id}) }
+  };
+};
 
-  render: function() {
-    const props = this.props;
-    const { store } = this.context;
-    const state = store.getState();
-
-    return (
-      <TodoList
-        todos={
-          this.filterTodos(state.todos, state.visibilityFilter) }
-        onTodoClick={ (id) => {store.dispatch({type: 'TOGGLE_TODO', id: id}); }}
-      />
-    );
-  },
-  filterTodos: function(todos, filter) {
-    return todos.filter(todo => {
-        switch(filter) {
-          case 'SHOW_ALL':
-             return true;
-          case 'SHOW_COMPLETED':
-             return todo.completed;
-           case 'SHOW_ACTIVE':
-             return !todo.completed;
-           default:
-             return true;
-        }
-     })
-  }
-
-});
+const { connect } = ReactRedux;
+const VisibleTodoList = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(TodoList);
 
 let nextTodoId = 0;
 var TodoApp = React.createClass({

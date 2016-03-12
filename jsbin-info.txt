@@ -46,3 +46,6 @@ https://jsbin.com/jukuyu/1/edit
 
 video 26: actually, you don't need to write the provider yourself
 https://jsbin.com/mojizo/1/edit?html,css,js,output
+
+video 27: auto-creating container component with ReactRedux connect function
+https://jsbin.com/qahide/6/edit?js,output
