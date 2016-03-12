@@ -74,6 +74,9 @@ const createVerboseStore = (reducer) => {
 
 ///////////////////////////////////
 
+// Use ReactRedux.connect to generate container components
+const { connect } = ReactRedux;
+
 var TodoItem = React.createClass({
   render: function() {
     var completed = this.props.completed;
@@ -128,46 +131,25 @@ var Link = React.createClass({
   }
 });
 
-var FilterLink = React.createClass({
-  contextTypes: {
-    store: React.PropTypes.object
-  },
-
-  componentDidMount: function() {
-    const { store } = this.context;
-    this.unsubscribe = store.subscribe(() => { this.forceUpdate(); });
-  },
-
-  componentWillUnmount: function() {
-    this.unsubscribe();
-  },
-
-  render: function() {
-    const props = this.props;
-    const { store } = this.context;
-
-    // Note that if there were another component that could independently
-    // modify state.visibilityFilter, we could end up with a stale value
-    // here. That's why we need to trigger a forceUpdate on every store
-    // state change on the FilterLink component by subsribing in the
-    // componentDidMount method
-    const state = store.getState();
-
-    return (
-      <Link
-        active={props.filter !== state.visibilityFilter}
-        onClick={() => { this.selectFilter(props.filter, store); }}
-        children={props.children}
-      />
-    );
-  },
-  selectFilter: function(filterName, store) {
-    store.dispatch({
-      type: 'SET_VISIBILITY_FILTER',
-      filter: filterName
-    })
+const mapStateToLinkProps = (state, ownProps) => {
+  return {
+    active: ownProps.filter !== state.visibilityFilter
+  };
+}
+const mapDispatchToLinkProps = (dispatch, ownProps) => {
+  return {
+    onClick: () => {
+      dispatch({
+        type: 'SET_VISIBILITY_FILTER',
+        filter: ownProps.filter
+      });
+    }
   }
-});
+}
+const FilterLink = connect(
+  mapStateToLinkProps,
+  mapDispatchToLinkProps
+)(Link)
 
 var TodoFilters = React.createClass({
   contextTypes: {
@@ -194,9 +176,6 @@ var TodoFilters = React.createClass({
       </p>);
   }
 });
-
-// Use ReactRedux.connect to generate container components
-const { connect } = ReactRedux;
 
 var AddTodo = React.createClass({
   render: function() {
