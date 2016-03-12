@@ -195,37 +195,32 @@ var TodoFilters = React.createClass({
   }
 });
 
+// Use ReactRedux.connect to generate container components
+const { connect } = ReactRedux;
+
 var AddTodo = React.createClass({
-  contextTypes: {
-    store: React.PropTypes.object
-  },
-
   render: function() {
-    const { store } = this.context;
-
+    const dispatch = this.props.dispatch;
     return (
       <div>
         <input ref={node => {
           this.input = node;}} />
 
         <button onClick={() => {
-          this.onAdd(this.input.value, store);
+          dispatch({
+            type: 'ADD_TODO',
+            text: this.input.value,
+            id: nextTodoId++
+          });
           this.input.value = '';
         }}>
         Add Todo
         </button>
       </div>
     );
-  },
-  onAdd: function(todoText, store) {
-    store.dispatch({
-      type: 'ADD_TODO',
-      text: todoText,
-      id: nextTodoId++
-    });
   }
-
 });
+AddTodo = connect()(AddTodo);
 
 const filterTodos = function(todos, filter) {
   return todos.filter(todo => {
@@ -242,22 +237,21 @@ const filterTodos = function(todos, filter) {
    })
 }
 
-const mapStateToProps = (state) => {
+// normally would call this mapStateToProps, but everything is in
+// one file, so we'll make longer names to keep things unique
+const mapStateToTodoListProps = (state) => {
   return {
       todos: filterTodos(state.todos, state.visibilityFilter)
   };
 };
-
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToTodoListProps = (dispatch) => {
   return {
     onTodoClick: (id) => { dispatch({type: 'TOGGLE_TODO', id: id}) }
   };
 };
-
-const { connect } = ReactRedux;
 const VisibleTodoList = connect(
-  mapStateToProps,
-  mapDispatchToProps
+  mapStateToTodoListProps,
+  mapDispatchToTodoListProps
 )(TodoList);
 
 let nextTodoId = 0;

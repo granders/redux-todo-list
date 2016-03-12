@@ -49,3 +49,6 @@ https://jsbin.com/mojizo/1/edit?html,css,js,output
 
 video 27: auto-creating container component with ReactRedux connect function
 https://jsbin.com/qahide/6/edit?js,output
+
+video 28
+https://jsbin.com/hanuto/3/edit?js,console,output
